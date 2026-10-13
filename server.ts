@@ -91,8 +91,8 @@ async function startServer() {
                           <h1 style="margin: 0; color: #ffffff !important; font-size: 22px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
                             TIARA SPORTS CLUB
                           </h1>
-                          <p style="margin: 6px 0 0 0; color: #fee2e2 !important; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600;">
-                            Sama-Savli Road · Vadodara, Gujarat
+                          <p style="margin: 6px 0 0 0; color: #fee2e2 !important; font-size: 11px; letter-spacing: 0.5px; font-weight: 600;">
+                            Besides Red Coral Greens, Opposite Nayara Petrol Pump<br>Sama-Savli Road, Vadodara, Gujarat
                           </p>
                           <div style="margin-top: 10px; display: inline-block; background-color: rgba(255,255,255,0.2); padding: 4px 14px; border-radius: 20px; color: #ffffff !important; font-size: 11px; font-weight: 700; letter-spacing: 0.5px;">
                             NEW ONLINE INQUIRY NOTIFICATION
@@ -237,10 +237,33 @@ async function startServer() {
 
                 <!-- Clean Footer (Natural Gray & Red Accent) -->
                 <tr>
-                  <td style="background-color: #f8fafc; padding: 20px 24px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 11px; color: #64748b; line-height: 1.6;">
-                    Dispatched automatically via Zoho Mail SMTP (${SMTP_USER}) to Club Administration (${ADMIN_EMAIL})<br>
-                    <strong>Tiara Sports Club</strong> · Sama-Savli Road (besides Red Coral greens, opposite Nayara petrol pump), Vadodara, Gujarat<br>
-                    Club Helpline: <a href="tel:+919825088900" style="color: #dc2626 !important; text-decoration: none; font-weight: 600;">+91 98250 88900</a>
+                  <td style="background-color: #f8fafc; padding: 30px 24px; text-align: center; border-top: 3px solid #dc2626;">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+                      <tr>
+                        <td align="center">
+                          <h3 style="color: #1f2937; font-size: 18px; font-weight: bold; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 1px;">
+                            TIARA SPORTS CLUB
+                          </h3>
+                          <p style="color: #374151; font-size: 14px; line-height: 1.8; margin: 0 0 15px 0; font-weight: 500;">
+                            📍 Besides Red Coral Greens, Opposite Nayara Petrol Pump<br>
+                            Sama-Savli Road, Vadodara, Gujarat, India
+                          </p>
+                          <p style="color: #1f2937; font-size: 14px; line-height: 1.8; margin: 0 0 15px 0;">
+                            📞 <strong>Phone:</strong> <a href="tel:+912652988900" style="color: #dc2626 !important; text-decoration: none; font-weight: 600;">+91 (0265) 298-8900</a><br>
+                            📱 <strong>Mobile:</strong> <a href="tel:+919825088900" style="color: #dc2626 !important; text-decoration: none; font-weight: 600;">+91 98250 88900</a><br>
+                            ✉️ <strong>Email:</strong> <a href="mailto:${ADMIN_EMAIL}" style="color: #dc2626 !important; text-decoration: none; font-weight: 600;">${ADMIN_EMAIL}</a>
+                          </p>
+                          <div style="border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 15px;">
+                            <p style="color: #6b7280; font-size: 12px; margin: 0; line-height: 1.6;">
+                              🕐 <strong>Timings:</strong> Monday – Sunday: 06:00 AM – 11:00 PM
+                            </p>
+                            <p style="color: #9ca3af; font-size: 11px; margin: 10px 0 0 0;">
+                              Dispatched automatically via Zoho SMTP (${SMTP_USER}) to ${ADMIN_EMAIL}
+                            </p>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
 
