@@ -92,25 +92,36 @@ export const ContactView: React.FC<ContactViewProps> = ({
 
     saveInquiryToStorage(inquiryPayload);
 
-    // Send via FormSubmit.co (100% serverless, no backend)
-    const contactEmail = import.meta.env.VITE_CONTACT_EMAIL || 'harshil@uniqtechsolutions.com';
-    fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        name: inquiryPayload.name,
-        email: inquiryPayload.email,
-        phone: inquiryPayload.phone,
-        facility: inquiryPayload.facilityName,
-        date: inquiryPayload.date,
-        message: inquiryPayload.query,
-        _subject: `[Tiara Sports] ${inquiryPayload.facilityName} - ${inquiryPayload.name}`,
-        _template: 'table',
-      }),
-    })
-      .then(res => res.json())
-      .then(data => console.log('Email sent:', data))
-      .catch(err => console.log('Email sent'));
+    // Send via FormSubmit.co - Direct form submission (not AJAX for first-time setup)
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://formsubmit.co/harshil@uniqtechsolutions.com';
+    form.target = '_blank';
+
+    // FormSubmit.co fields
+    const fields = {
+      name: inquiryPayload.name,
+      email: inquiryPayload.email,
+      phone: inquiryPayload.phone,
+      facility: inquiryPayload.facilityName,
+      date: inquiryPayload.date,
+      message: inquiryPayload.query,
+      _subject: `[Tiara Sports] ${inquiryPayload.facilityName} - ${inquiryPayload.name}`,
+      _captcha: 'false',
+      _template: 'table',
+    };
+
+    Object.entries(fields).forEach(([key, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = String(value);
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
 
     setTimeout(() => {
       setIsSubmitting(false);

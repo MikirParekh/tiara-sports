@@ -242,27 +242,39 @@ export const TurfSlotBookingWidget: React.FC<TurfSlotBookingWidgetProps> = ({
 
       saveInquiryToStorage(inquiry);
 
-      // Send via FormSubmit.co (100% serverless, no backend)
-      const contactEmail = import.meta.env.VITE_CONTACT_EMAIL || 'harshil@uniqtechsolutions.com';
-      fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          name: inquiry.name,
-          email: inquiry.email,
-          phone: inquiry.phone,
-          facility: inquiry.facilityName,
-          sport: inquiry.sport,
-          date: inquiry.date,
-          timeSlot: inquiry.timeSlot,
-          message: inquiry.query,
-          _subject: `[Tiara Sports] ${inquiry.category} - ${inquiry.name}`,
-          _template: 'table',
-        }),
-      })
-        .then(res => res.json())
-        .then(data => console.log('Email sent:', data))
-        .catch(err => console.log('Email sent'));
+      // Send via FormSubmit.co - Direct form submission
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = 'https://formsubmit.co/harshil@uniqtechsolutions.com';
+      form.target = '_blank';
+
+      const fields = {
+        inquiryId: generatedId,
+        name: inquiry.name,
+        email: inquiry.email,
+        phone: inquiry.phone,
+        sport: selectedSport.toUpperCase(),
+        facility: current.name,
+        date: selectedDate,
+        timeSlot: formattedTimeSlot,
+        category: inquiryCategory,
+        message: queryMessage.trim(),
+        _subject: `[Tiara Sports] ${inquiry.category} - ${inquiry.name}`,
+        _captcha: 'false',
+        _template: 'table',
+      };
+
+      Object.entries(fields).forEach(([key, value]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = String(value);
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
 
       setSubmittedInquiry(inquiry);
       setIsSubmitting(false);

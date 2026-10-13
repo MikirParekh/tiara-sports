@@ -138,26 +138,38 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
       saveInquiryToStorage(inquiryData);
 
-      // Send via FormSubmit.co (100% serverless, no backend)
-      const contactEmail = import.meta.env.VITE_CONTACT_EMAIL || 'harshil@uniqtechsolutions.com';
-      fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          name: inquiryData.name,
-          email: inquiryData.email,
-          phone: inquiryData.phone,
-          facility: inquiryData.facilityName,
-          date: inquiryData.date,
-          timeSlot: inquiryData.timeSlot,
-          message: inquiryData.query,
-          _subject: `[Tiara Sports] ${inquiryData.category} - ${inquiryData.name}`,
-          _template: 'table',
-        }),
-      })
-        .then(res => res.json())
-        .then(data => console.log('Email sent:', data))
-        .catch(err => console.log('Email sent'));
+      // Send via FormSubmit.co - Direct form submission
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = 'https://formsubmit.co/harshil@uniqtechsolutions.com';
+      form.target = '_blank';
+
+      const fields = {
+        inquiryId: refCode,
+        name: inquiryData.name,
+        email: inquiryData.email,
+        phone: inquiryData.phone,
+        facility: itemName,
+        date: date,
+        timeSlot: formattedTimeSlot,
+        category: inquiryType,
+        message: queryMessage.trim(),
+        _subject: `[Tiara Sports] ${inquiryData.category} - ${inquiryData.name}`,
+        _captcha: 'false',
+        _template: 'table',
+      };
+
+      Object.entries(fields).forEach(([key, value]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = String(value);
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
 
       setConfirmedInquiry({
         code: refCode,
