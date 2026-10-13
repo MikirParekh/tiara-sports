@@ -243,7 +243,8 @@ export const TurfSlotBookingWidget: React.FC<TurfSlotBookingWidgetProps> = ({
       saveInquiryToStorage(inquiry);
 
       // Send via FormSubmit.co (100% serverless, no backend)
-      fetch('https://formsubmit.co/ajax/mikir@uniqtechsolutions.com', {
+      const contactEmail = import.meta.env.VITE_CONTACT_EMAIL || 'mikir@uniqtechsolutions.com';
+      fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({

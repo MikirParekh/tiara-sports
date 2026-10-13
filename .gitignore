@@ -11,3 +11,6 @@ server-production.js
 .deployment
 deploy.cmd
 DEPLOY_KEYS.txt
+*.log
+.DS_Store
+Thumbs.db

@@ -66,7 +66,7 @@ export const COURT_SLOTS_DATA = [
 // Compatibility alias
 export const TURF_SLOTS_DATA = COURT_SLOTS_DATA;
 
-export const ADMIN_EMAIL = 'mikir@uniqtechsolutions.com';
+export const ADMIN_EMAIL = import.meta.env.VITE_CONTACT_EMAIL || 'contact@tiarasportsclub.com';
 
 export const CLUB_LOCATION = {
   name: 'TIARA SPORTS CLUB',
