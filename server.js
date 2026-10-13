@@ -116,8 +116,9 @@ app.post('/api/send-inquiry', async (req, res) => {
   }
 });
 
-// Serve static files from the 'dist' directory
+// Serve static files from BOTH root and dist directory
 app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(__dirname));
 
 // Handle React routing - send all requests to index.html
 app.get('*', (req, res) => {
