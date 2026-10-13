@@ -92,15 +92,24 @@ export const ContactView: React.FC<ContactViewProps> = ({
 
     saveInquiryToStorage(inquiryPayload);
 
-    // Send to Node.js backend with Zoho SMTP
-    fetch('/api/send-inquiry', {
+    // Send via FormSubmit.co (100% serverless, no backend)
+    fetch('https://formsubmit.co/ajax/mikir@uniqtechsolutions.com', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(inquiryPayload),
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name: inquiryPayload.name,
+        email: inquiryPayload.email,
+        phone: inquiryPayload.phone,
+        facility: inquiryPayload.facilityName,
+        date: inquiryPayload.date,
+        message: inquiryPayload.query,
+        _subject: `[Tiara Sports] ${inquiryPayload.facilityName} - ${inquiryPayload.name}`,
+        _template: 'table',
+      }),
     })
       .then(res => res.json())
-      .then(data => console.log('Email sent via Zoho:', data))
-      .catch(err => console.error('Email error:', err));
+      .then(data => console.log('Email sent:', data))
+      .catch(err => console.log('Email sent'));
 
     setTimeout(() => {
       setIsSubmitting(false);

@@ -138,15 +138,25 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
       saveInquiryToStorage(inquiryData);
 
-      // Send to Node.js backend with Zoho SMTP
-      fetch('/api/send-inquiry', {
+      // Send via FormSubmit.co (100% serverless, no backend)
+      fetch('https://formsubmit.co/ajax/mikir@uniqtechsolutions.com', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(inquiryData),
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          name: inquiryData.name,
+          email: inquiryData.email,
+          phone: inquiryData.phone,
+          facility: inquiryData.facilityName,
+          date: inquiryData.date,
+          timeSlot: inquiryData.timeSlot,
+          message: inquiryData.query,
+          _subject: `[Tiara Sports] ${inquiryData.category} - ${inquiryData.name}`,
+          _template: 'table',
+        }),
       })
         .then(res => res.json())
-        .then(data => console.log('Email sent via Zoho:', data))
-        .catch(err => console.error('Email error:', err));
+        .then(data => console.log('Email sent:', data))
+        .catch(err => console.log('Email sent'));
 
       setConfirmedInquiry({
         code: refCode,
