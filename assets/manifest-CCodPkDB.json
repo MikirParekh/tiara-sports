@@ -1,0 +1,41 @@
+{
+  "name": "Tiara Sports Club Vadodara",
+  "short_name": "Tiara Sports",
+  "description": "Premier Multi-Sport Club & Academy in Vadodara, Gujarat. World-class Tennis, Pickleball, Badminton, and Gym facilities.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#dc2626",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["sports", "fitness", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "Book Court",
+      "short_name": "Book",
+      "description": "Book tennis, pickleball, or badminton court",
+      "url": "/facilities",
+      "icons": [{ "src": "/favicon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Contact Us",
+      "short_name": "Contact",
+      "description": "Get in touch with Tiara Sports Club",
+      "url": "/contact",
+      "icons": [{ "src": "/favicon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

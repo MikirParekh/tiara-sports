@@ -1,6 +1,6 @@
 # Security Contact Information
 # https://securitytxt.org/
 
-Contact: mailto:mikir@uniqtechsolutions.com
+Contact: mailto:harshil@uniqtechsolutions.com
 Preferred-Languages: en, hi, gu
 Canonical: https://uniqtech-001-site48.htempurl.com/.well-known/security.txt

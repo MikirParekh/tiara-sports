@@ -93,7 +93,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
     saveInquiryToStorage(inquiryPayload);
 
     // Send via FormSubmit.co (100% serverless, no backend)
-    const contactEmail = import.meta.env.VITE_CONTACT_EMAIL || 'mikir@uniqtechsolutions.com';
+    const contactEmail = import.meta.env.VITE_CONTACT_EMAIL || 'harshil@uniqtechsolutions.com';
     fetch(`https://formsubmit.co/ajax/${contactEmail}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
