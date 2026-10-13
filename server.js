@@ -116,13 +116,12 @@ app.post('/api/send-inquiry', async (req, res) => {
   }
 });
 
-// Serve static files from BOTH root and dist directory
-app.use(express.static(path.join(__dirname, 'dist')));
+// Serve static files from root directory (where build files are copied)
 app.use(express.static(__dirname));
 
 // Handle React routing - send all requests to index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {
