@@ -1,11 +1,19 @@
 import { MatchResult, StandingRow, Player, Facility, ClubEvent, BlogPost, AchievementMilestone } from '../types';
 
-export const GYM_IMAGE = '/src/assets/images/athletic_gym_interior_1791482317405.jpg';
-export const PICKLEBALL_IMAGE = '/src/assets/images/pickleball_court_action_1791444715313.jpg';
-export const BADMINTON_GYM_IMAGE = '/src/assets/images/badminton_gym_complex_1791444733550.jpg';
-export const TENNIS_COURT_IMAGE = '/src/assets/images/padel_tennis_court_1791443404210.jpg';
-export const TROPHY_IMAGE = '/src/assets/images/trophy_showcase_awards_1791443423828.jpg';
-export const ARENA_COMPLEX_IMAGE = '/src/assets/images/facility_indoor_arena_1791443385742.jpg';
+// Import images properly for Vite bundling
+import gymImage from '../assets/images/athletic_gym_interior_1791482317405.jpg';
+import pickleballImage from '../assets/images/pickleball_court_action_1791444715313.jpg';
+import badmintonGymImage from '../assets/images/badminton_gym_complex_1791444733550.jpg';
+import tennisCourtImage from '../assets/images/padel_tennis_court_1791443404210.jpg';
+import trophyImage from '../assets/images/trophy_showcase_awards_1791443423828.jpg';
+import arenaComplexImage from '../assets/images/facility_indoor_arena_1791443385742.jpg';
+
+export const GYM_IMAGE = gymImage;
+export const PICKLEBALL_IMAGE = pickleballImage;
+export const BADMINTON_GYM_IMAGE = badmintonGymImage;
+export const TENNIS_COURT_IMAGE = tennisCourtImage;
+export const TROPHY_IMAGE = trophyImage;
+export const ARENA_COMPLEX_IMAGE = arenaComplexImage;
 
 export const VADODARA_LIVE_CONDITIONS = {
   temp: '28°C',
