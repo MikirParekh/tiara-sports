@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <system.webServer>
+    <handlers>
+      <add name="iisnode-test" path="test-node.js" verb="*" modules="iisnode" />
+    </handlers>
+    <rewrite>
+      <rules>
+        <rule name="TestNode">
+          <match url=".*" />
+          <action type="Rewrite" url="test-node.js"/>
+        </rule>
+      </rules>
+    </rewrite>
+    <iisnode loggingEnabled="true" logDirectory="iisnode" />
+  </system.webServer>
+</configuration>
