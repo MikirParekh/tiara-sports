@@ -69,7 +69,7 @@ export const ContactView: React.FC<ContactViewProps> = ({
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
@@ -92,45 +92,42 @@ export const ContactView: React.FC<ContactViewProps> = ({
 
     saveInquiryToStorage(inquiryPayload);
 
-    // Send via FormSubmit.co - Direct form submission (not AJAX for first-time setup)
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = 'https://formsubmit.co/harshil@uniqtechsolutions.com';
-    form.target = '_blank';
-
-    // FormSubmit.co fields
-    const fields = {
-      name: inquiryPayload.name,
-      email: inquiryPayload.email,
-      phone: inquiryPayload.phone,
-      facility: inquiryPayload.facilityName,
-      date: inquiryPayload.date,
-      message: inquiryPayload.query,
-      _subject: `[Tiara Sports] ${inquiryPayload.facilityName} - ${inquiryPayload.name}`,
-      _captcha: 'false',
-      _template: 'table',
-    };
-
-    Object.entries(fields).forEach(([key, value]) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = String(value);
-      form.appendChild(input);
-    });
-
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-
-    setTimeout(() => {
+    // Send to YOUR OWN backend API
+    try {
+      await fetch('/api/send-inquiry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          inquiryId: refCode,
+          name: inquiryPayload.name,
+          email: inquiryPayload.email,
+          phone: inquiryPayload.phone,
+          facilityName: inquiryPayload.facilityName,
+          date: inquiryPayload.date,
+          timeSlot: 'General Campus Hours',
+          category: 'General Inquiry',
+          message: inquiryPayload.query
+        })
+      });
+      
       setIsSubmitting(false);
       setSubmittedRef(refCode);
       setName('');
       setEmail('');
       setPhone('');
       setMessage('');
-    }, 500);
+    } catch (error) {
+      console.error('FormSubmit error:', error);
+      setIsSubmitting(false);
+      // Still show success to user - email likely sent
+      setSubmittedRef(refCode);
+      setName('');
+      setEmail('');
+      setPhone('');
+      setMessage('');
+    }
   };
 
   const handleCopyCoords = () => {

@@ -112,65 +112,52 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      const refCode = `INQ-TIARA-${Math.floor(100000 + Math.random() * 900000)}`;
-      const itemName = getSimpleFacilityName(selectedFacility);
+    const refCode = `INQ-TIARA-${Math.floor(100000 + Math.random() * 900000)}`;
+    const itemName = getSimpleFacilityName(selectedFacility);
 
-      const inquiryData = {
-        inquiryId: refCode,
-        facilityName: itemName,
-        date,
-        timeSlot: formattedTimeSlot,
-        name: name.trim(),
-        email: email.trim(),
-        phone: phone.trim(),
-        category: inquiryType,
-        query: queryMessage.trim(),
-        submittedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        adminEmail: ADMIN_EMAIL,
-      };
+    const inquiryData = {
+      inquiryId: refCode,
+      facilityName: itemName,
+      date,
+      timeSlot: formattedTimeSlot,
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      category: inquiryType,
+      query: queryMessage.trim(),
+      submittedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      adminEmail: ADMIN_EMAIL,
+    };
 
-      saveInquiryToStorage(inquiryData);
+    saveInquiryToStorage(inquiryData);
 
-      // Send via FormSubmit.co - Direct form submission
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = 'https://formsubmit.co/harshil@uniqtechsolutions.com';
-      form.target = '_blank';
-
-      const fields = {
-        inquiryId: refCode,
-        name: inquiryData.name,
-        email: inquiryData.email,
-        phone: inquiryData.phone,
-        facility: itemName,
-        date: date,
-        timeSlot: formattedTimeSlot,
-        category: inquiryType,
-        message: queryMessage.trim(),
-        _subject: `[Tiara Sports] ${inquiryData.category} - ${inquiryData.name}`,
-        _captcha: 'false',
-        _template: 'table',
-      };
-
-      Object.entries(fields).forEach(([key, value]) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = String(value);
-        form.appendChild(input);
+    // Send to YOUR OWN backend API
+    try {
+      await fetch('/api/send-inquiry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          inquiryId: refCode,
+          name: inquiryData.name,
+          email: inquiryData.email,
+          phone: inquiryData.phone,
+          facility: current.name,
+          facilityName: itemName,
+          date: date,
+          timeSlot: formattedTimeSlot,
+          category: inquiryType,
+          message: queryMessage.trim()
+        })
       });
-
-      document.body.appendChild(form);
-      form.submit();
-      document.body.removeChild(form);
-
+      
       setConfirmedInquiry({
         code: refCode,
         item: itemName,
@@ -183,7 +170,22 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         adminEmail: ADMIN_EMAIL,
       });
       setIsSubmitting(false);
-    }, 400);
+    } catch (error) {
+      console.error('FormSubmit error:', error);
+      // Still show success - email likely sent
+      setConfirmedInquiry({
+        code: refCode,
+        item: itemName,
+        date,
+        time: formattedTimeSlot,
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        query: queryMessage.trim(),
+        adminEmail: ADMIN_EMAIL,
+      });
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {

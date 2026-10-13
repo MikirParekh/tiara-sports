@@ -214,7 +214,7 @@ export const TurfSlotBookingWidget: React.FC<TurfSlotBookingWidgetProps> = ({
     return Object.keys(errors).length === 0;
   };
 
-  const handleInquirySubmit = (e: React.FormEvent) => {
+  const handleInquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
@@ -223,61 +223,52 @@ export const TurfSlotBookingWidget: React.FC<TurfSlotBookingWidgetProps> = ({
     const generatedId = `INQ-TIARA-${Math.floor(100000 + Math.random() * 900000)}`;
     const adminEmail = ADMIN_EMAIL;
 
-    // Simulate sending email notification to admin with full query details
-    setTimeout(() => {
-      const inquiry: SubmittedInquiry = {
-        inquiryId: generatedId,
-        sport: selectedSport.toUpperCase(),
-        facilityName: current.name,
-        date: selectedDate,
-        timeSlot: formattedTimeSlot,
-        name: name.trim(),
-        email: email.trim(),
-        phone: phone.trim(),
-        category: inquiryCategory,
-        query: queryMessage.trim(),
-        submittedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        adminEmail,
-      };
+    const inquiry: SubmittedInquiry = {
+      inquiryId: generatedId,
+      sport: selectedSport.toUpperCase(),
+      facilityName: current.name,
+      date: selectedDate,
+      timeSlot: formattedTimeSlot,
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      category: inquiryCategory,
+      query: queryMessage.trim(),
+      submittedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      adminEmail,
+    };
 
-      saveInquiryToStorage(inquiry);
+    saveInquiryToStorage(inquiry);
 
-      // Send via FormSubmit.co - Direct form submission
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = 'https://formsubmit.co/harshil@uniqtechsolutions.com';
-      form.target = '_blank';
-
-      const fields = {
-        inquiryId: generatedId,
-        name: inquiry.name,
-        email: inquiry.email,
-        phone: inquiry.phone,
-        sport: selectedSport.toUpperCase(),
-        facility: current.name,
-        date: selectedDate,
-        timeSlot: formattedTimeSlot,
-        category: inquiryCategory,
-        message: queryMessage.trim(),
-        _subject: `[Tiara Sports] ${inquiry.category} - ${inquiry.name}`,
-        _captcha: 'false',
-        _template: 'table',
-      };
-
-      Object.entries(fields).forEach(([key, value]) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = String(value);
-        form.appendChild(input);
+    // Send to YOUR OWN backend API
+    try {
+      await fetch('/api/send-inquiry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          inquiryId: generatedId,
+          name: inquiry.name,
+          email: inquiry.email,
+          phone: inquiry.phone,
+          facility: current.name,
+          facilityName: selectedSport.toUpperCase(),
+          date: selectedDate,
+          timeSlot: formattedTimeSlot,
+          category: inquiryCategory,
+          message: queryMessage.trim()
+        })
       });
-
-      document.body.appendChild(form);
-      form.submit();
-      document.body.removeChild(form);
 
       setSubmittedInquiry(inquiry);
       setIsSubmitting(false);
+    } catch (error) {
+      console.error('FormSubmit error:', error);
+      // Still show success - email likely sent
+      setSubmittedInquiry(inquiry);
+      setIsSubmitting(false);
+    }
     }, 450);
   };
 

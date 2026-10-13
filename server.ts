@@ -15,16 +15,16 @@ async function startServer() {
 
   app.use(express.json());
 
-  // Zoho SMTP Credentials & Configuration
-  const SMTP_USER = 'web@uniqtechsolutions.com';
-  const SMTP_PASS = 'Web@281989#';
-  const SMTP_HOST = 'smtp.zoho.com';
-  const SMTP_PORT = 465;
-  const ADMIN_EMAIL = 'mikir@uniqtechsolutions.com';
+  // Zoho SMTP Credentials & Configuration for SmarterASP.NET
+  const SMTP_USER = process.env.SMTP_USER || 'web@uniqtechsolutions.com';
+  const SMTP_PASS = process.env.SMTP_PASS || 'Web@281989#';
+  const SMTP_HOST = process.env.SMTP_HOST || 'smtp.zoho.com';
+  const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465');
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'harshill.barot@gmail.com';
 
   console.log(`[SMTP Config] Initialized Zoho SMTP for sender: ${SMTP_USER} -> Recipient: ${ADMIN_EMAIL}`);
 
-  // Create primary Zoho SSL Transporter (Port 465)
+  // Create primary Zoho SSL Transporter (Port 465) - SmarterASP.NET Compatible
   const zohoTransporterSSL = nodemailer.createTransport({
     host: SMTP_HOST,
     port: SMTP_PORT,
@@ -34,12 +34,16 @@ async function startServer() {
       pass: SMTP_PASS,
     },
     tls: {
-      rejectUnauthorized: false,
+      rejectUnauthorized: false, // Required for SmarterASP.NET
+      minVersion: 'TLSv1.2',
     },
-    connectionTimeout: 10000,
+    connectionTimeout: 20000,
+    greetingTimeout: 15000,
+    logger: console,
+    debug: false,
   });
 
-  // Create fallback Zoho TLS Transporter (Port 587) in case 465 is blocked by firewall
+  // Create fallback Zoho TLS Transporter (Port 587) - SmarterASP.NET Fallback
   const zohoTransporterTLS = nodemailer.createTransport({
     host: SMTP_HOST,
     port: 587,
@@ -50,9 +54,13 @@ async function startServer() {
       pass: SMTP_PASS,
     },
     tls: {
-      rejectUnauthorized: false,
+      rejectUnauthorized: false, // Required for SmarterASP.NET
+      minVersion: 'TLSv1.2',
     },
-    connectionTimeout: 10000,
+    connectionTimeout: 20000,
+    greetingTimeout: 15000,
+    logger: console,
+    debug: false,
   });
 
   // API endpoint for automatic background inquiry dispatch via Zoho SMTP
