@@ -242,17 +242,15 @@ export const TurfSlotBookingWidget: React.FC<TurfSlotBookingWidgetProps> = ({
 
       saveInquiryToStorage(inquiry);
 
-      // Send directly to FormSubmit.co (no backend needed)
-      const formData = new FormData();
-      Object.entries(inquiry).forEach(([key, value]) => {
-        formData.append(key, String(value));
-      });
-      formData.append('_subject', `[Tiara Sports] ${inquiry.category} - ${inquiry.name}`);
-
-      fetch('https://formsubmit.co/mikir@uniqtechsolutions.com', {
+      // Send to Node.js backend with Zoho SMTP
+      fetch('/api/send-inquiry', {
         method: 'POST',
-        body: formData,
-      }).catch(err => console.log('Email sent'));
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(inquiry),
+      })
+        .then(res => res.json())
+        .then(data => console.log('Email sent via Zoho:', data))
+        .catch(err => console.error('Email error:', err));
 
       setSubmittedInquiry(inquiry);
       setIsSubmitting(false);
