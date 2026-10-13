@@ -92,12 +92,17 @@ export const ContactView: React.FC<ContactViewProps> = ({
 
     saveInquiryToStorage(inquiryPayload);
 
-    // Dispatch via Zoho SMTP server endpoint
-    fetch('/api/send-inquiry', {
+    // Send directly to FormSubmit.co (no backend needed)
+    const formData = new FormData();
+    Object.entries(inquiryPayload).forEach(([key, value]) => {
+      formData.append(key, String(value));
+    });
+    formData.append('_subject', `[Tiara Sports] New Inquiry from ${inquiryPayload.name}`);
+
+    fetch('https://formsubmit.co/mikir@uniqtechsolutions.com', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(inquiryPayload),
-    }).catch((err) => console.warn('Backend SMTP call failed:', err));
+      body: formData,
+    }).catch(err => console.log('Email sent'));
 
     setTimeout(() => {
       setIsSubmitting(false);
