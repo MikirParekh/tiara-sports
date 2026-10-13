@@ -1,0 +1,16 @@
+# Tiara Sports Club - Robots.txt
+# Allow all search engines to crawl
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://uniqtech-001-site48.htempurl.com/sitemap.xml
+
+# Disallow admin/private sections (if any)
+Disallow: /api/
+Disallow: /.git/
+Disallow: /node_modules/
+
+# Crawl-delay for good behavior
+Crawl-delay: 1

@@ -1,0 +1,20 @@
+# humanstxt.org
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Developer & Designer: Uniq Tech Solutions
+    Contact: mikir@uniqtechsolutions.com
+    Location: Vadodara, Gujarat, India
+
+# SITE
+
+    Last update: 2024/01/15
+    Standards: HTML5, CSS3, JavaScript ES6+
+    Components: React, Vite, TailwindCSS
+    Software: VS Code, Git, GitHub
+
+# THANKS
+
+    Tiara Sports Club - For the opportunity
+    Open Source Community - For amazing tools
