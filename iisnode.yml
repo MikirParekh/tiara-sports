@@ -1,0 +1,33 @@
+# IISNode Configuration for Tiara Sports Club
+# This file configures how Node.js runs on SmarterASP.NET
+
+# Node.js environment
+node_env: production
+
+# Logging settings
+loggingEnabled: true
+logDirectory: iisnode
+devErrorsEnabled: true
+debuggingEnabled: true
+
+# Process settings
+nodeProcessCountPerApplication: 1
+maxConcurrentRequestsPerProcess: 1024
+maxNamedPipeConnectionRetry: 100
+namedPipeConnectionRetryDelay: 250
+
+# File watching
+watchedFiles: *.js;web.config;iisnode.yml
+
+# Enable detailed errors for debugging (disable in real production)
+debugHeaderEnabled: false
+enableXFF: false
+
+# Request timeout (30 seconds)
+nodeProcessCommandLine: node
+
+# Graceful shutdown
+gracefulShutdownTimeout: 60000
+
+# URL rewrite detection
+promoteServerVars: LOGON_USER,AUTH_USER,AUTH_TYPE

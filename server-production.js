@@ -12,12 +12,7 @@ try {
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Server Error:', err);
-  res.status(500).json({ error: 'Internal Server Error' });
-});
-
+// Parse JSON and URL-encoded bodies FIRST
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -53,7 +48,36 @@ app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     adminEmail: ADMIN_EMAIL,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    nodeVersion: process.version,
+    port: PORT,
+    env: process.env.NODE_ENV || 'production'
+  });
+});
+
+// Diagnostic endpoint (remove in production)
+app.get('/api/diagnostic', (req, res) => {
+  const fs = require('fs');
+  const indexExists = fs.existsSync(path.join(__dirname, 'index.html'));
+  const assetsExists = fs.existsSync(path.join(__dirname, 'assets'));
+  
+  res.json({
+    server: 'Tiara Sports Club',
+    timestamp: new Date().toISOString(),
+    nodeVersion: process.version,
+    port: PORT,
+    environment: process.env.NODE_ENV || 'production',
+    directories: {
+      root: __dirname,
+      cwd: process.cwd(),
+      indexHtmlExists: indexExists,
+      assetsExists: assetsExists
+    },
+    config: {
+      adminEmail: ADMIN_EMAIL,
+      smtpConfigured: !!transporter,
+      smtpHost: SMTP_HOST
+    }
   });
 });
 
@@ -290,21 +314,52 @@ ${inquiry.message || inquiry.query}
 });
 
 // Serve static files from root directory (production build files are copied here)
-app.use(express.static(__dirname));
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+app.use(express.static(__dirname, {
+  index: false, // Don't auto-serve index.html for directories
+  maxAge: '1d'
+}));
 
-// Catch-all route for React Router (SPA)
+app.use('/assets', express.static(path.join(__dirname, 'assets'), {
+  maxAge: '7d'
+}));
+
+// Catch-all route for React Router (SPA) - Must be last!
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  const indexPath = path.join(__dirname, 'index.html');
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error('[Error] Failed to send index.html:', err);
+      res.status(500).send('Server Error: Cannot load application');
+    }
+  });
 });
 
-// Listen on the port provided by IISNode (SmarterASP.NET requirement)
-app.listen(PORT, () => {
-  console.log(`[Tiara Sports] Server running on port ${PORT}`);
-  console.log(`[Tiara Sports] Admin email: ${ADMIN_EMAIL}`);
-  console.log(`[Tiara Sports] Environment: ${process.env.NODE_ENV || 'production'}`);
-  console.log(`[Tiara Sports] Static files served from: ${__dirname}`);
-}).on('error', (err) => {
-  console.error('[Server Error]', err);
-  process.exit(1);
+// Global error handling middleware - Must be AFTER all routes
+app.use((err, req, res, next) => {
+  console.error('[Server Error]:', err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status(500).json({ 
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'production' ? 'An error occurred' : err.message 
+  });
 });
+
+// Start server
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`[Tiara Sports] ✅ Server running on port ${PORT}`);
+    console.log(`[Tiara Sports] 📧 Admin email: ${ADMIN_EMAIL}`);
+    console.log(`[Tiara Sports] 🌍 Environment: ${process.env.NODE_ENV || 'production'}`);
+    console.log(`[Tiara Sports] 📁 Static files: ${__dirname}`);
+    console.log(`[Tiara Sports] 📂 Assets directory: ${path.join(__dirname, 'assets')}`);
+  }).on('error', (err) => {
+    console.error('[Server Fatal Error]:', err);
+    if (err.code === 'EADDRINUSE') {
+      console.error(`Port ${PORT} is already in use. Please kill the process or use a different port.`);
+    }
+  });
+}
+
+module.exports = app;
