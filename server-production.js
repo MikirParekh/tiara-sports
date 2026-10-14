@@ -1,31 +1,52 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const path = require('path');
-require('dotenv').config();
+
+// Load environment variables with error handling
+try {
+  require('dotenv').config();
+} catch (err) {
+  console.log('Warning: dotenv not loaded:', err.message);
+}
 
 const app = express();
-// IISNode provides PORT via environment variable - CRITICAL for SmarterASP.NET
 const PORT = process.env.PORT || 8080;
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ADMIN EMAIL - All inquiries go here
-const ADMIN_EMAIL = 'harshill.barot@gmail.com';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'harshill.barot@gmail.com';
+const SMTP_USER = process.env.SMTP_USER || 'web@uniqtechsolutions.com';
+const SMTP_PASS = process.env.SMTP_PASS || 'Web@281989#';
+const SMTP_HOST = process.env.SMTP_HOST || 'smtp.zoho.com';
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465');
 
-// Zoho SMTP Configuration
-const transporter = nodemailer.createTransport({
-  host: 'smtp.zoho.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: 'web@uniqtechsolutions.com',
-    pass: 'Web@281989#'
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
+// Zoho SMTP Configuration with error handling
+let transporter;
+try {
+  transporter = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: true,
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASS
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
+  console.log('[Email] SMTP configured successfully');
+} catch (err) {
+  console.error('[Email] SMTP configuration failed:', err.message);
+}
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -282,4 +303,8 @@ app.listen(PORT, () => {
   console.log(`[Tiara Sports] Server running on port ${PORT}`);
   console.log(`[Tiara Sports] Admin email: ${ADMIN_EMAIL}`);
   console.log(`[Tiara Sports] Environment: ${process.env.NODE_ENV || 'production'}`);
+  console.log(`[Tiara Sports] Static files served from: ${__dirname}`);
+}).on('error', (err) => {
+  console.error('[Server Error]', err);
+  process.exit(1);
 });
