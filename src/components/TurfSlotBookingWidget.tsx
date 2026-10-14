@@ -269,7 +269,6 @@ export const TurfSlotBookingWidget: React.FC<TurfSlotBookingWidgetProps> = ({
       setSubmittedInquiry(inquiry);
       setIsSubmitting(false);
     }
-    }, 450);
   };
 
   const handleResetInquiry = () => {
